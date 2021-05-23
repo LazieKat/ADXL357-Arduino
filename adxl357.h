@@ -106,7 +106,8 @@ class Adxl357
         uint8_t getDeviceVer            (uint8_t *result);
         uint8_t getStatus               (uint8_t *result);
         uint8_t getFIFOEntries          (uint8_t *result);
-        uint8_t getAccelData            (int32_t *x, int32_t *y, int32_t *z);
+        uint8_t getRawAccelData         (int32_t *x, int32_t *y, int32_t *z);
+        uint8_t getScaledAccelData      (double *x, double *y, double *z);
         uint8_t getActivityCount        (uint8_t *result);
 
         uint8_t setActivityEnable       (bool x, bool y, bool z);
@@ -116,9 +117,11 @@ class Adxl357
         uint8_t setFilter               (uint8_t hpf, uint8_t odr_lpf);
         uint8_t setIntMap               (uint8_t val);
         uint8_t setAccelRange           (uint8_t range);
+        uint8_t setCalibrationConstant  (double calib);
 
     private:
         uint8_t  _address;
+        double   _calib = 1;
 
         uint8_t writeBytes              (uint8_t reg, uint8_t *data, uint32_t len);
         uint8_t readBytes               (uint8_t reg, uint8_t *dest, uint32_t len, uint32_t retries = 10);

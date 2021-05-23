@@ -135,7 +135,7 @@ uint8_t Adxl357::getFIFOEntries(uint8_t *result)
  * @param z pointer to store Z value
  * @return Zero on success
  */
-uint8_t Adxl357::getAccelData(int32_t *x, int32_t *y, int32_t *z)
+uint8_t Adxl357::getRawAccelData(int32_t *x, int32_t *y, int32_t *z)
 {
     uint8_t data[9] = {0};                          // array to read 3 measurements 3-byte each
 
@@ -165,6 +165,30 @@ uint8_t Adxl357::getAccelData(int32_t *x, int32_t *y, int32_t *z)
     return 0;
 }
 
+
+/**
+ * @brief Read X, Y, and Z acceleration values from FIFO (safer), then scale according to _calib.
+ * Reading from FIFO ensures the read data is from the same measurement.
+ * For more info check datasheet P.28.
+ * 
+ * @param x pointer to store X value
+ * @param y pointer to store Y value
+ * @param z pointer to store Z value
+ * @return Zero on success
+ */
+uint8_t Adxl357::getScaledAccelData(double *x, double *y, double *z)
+{
+    int32_t xr, yr, zr;
+
+    if(getRawAccelData(&xr, &yr, &zr))
+        return 1;
+
+    *x = xr * _calib;
+    *y = yr * _calib;
+    *z = zr * _calib;
+
+    return 0;
+}
 
 /**
  * @brief Read number of events above threshold required to detect activity
@@ -284,6 +308,18 @@ uint8_t Adxl357::setAccelRange(uint8_t range)
     return writeBytes(ADXL357_REG_RANGE, &val, 1);
 }
 
+
+/**
+ * @brief Set calibration constant to scale XYZ results
+ * 
+ * @param calib the constant to set
+ * @return Always zero
+ */
+uint8_t Adxl357::setCalibrationConstant(double calib)
+{
+    _calib = calib;
+    return 0;
+}
 
 ////    Private Functions    ////
 
