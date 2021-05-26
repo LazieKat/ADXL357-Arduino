@@ -35,7 +35,7 @@ SOFTWARE.
  * @param addr the I2C adress of the devide
  * @return Zero on success
  */
-uint8_t Adxl357::begin(uint8_t addr)
+uint8_t Adxl357::init(uint8_t addr)
 {
     uint8_t ID;
 

@@ -99,7 +99,7 @@ class Adxl357
         Adxl357()  {};
         ~Adxl357() {};
 
-        uint8_t begin                   (uint8_t addr);
+        uint8_t init                    (uint8_t addr);
         uint8_t reset                   ();
         bool    isDataReady             ();
 

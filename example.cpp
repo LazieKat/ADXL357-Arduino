@@ -11,7 +11,7 @@ void setup(void)
 {
     Serial.begin(9600);
 
-    while(adxl357.begin(ADXL357_DEF_ADD))
+    while(adxl357.init(ADXL357_DEF_ADD))
         Serial.println("Can't detect an ADXL357 device");
 
     Serial.println("Init OK");
