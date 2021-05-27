@@ -35,12 +35,14 @@ SOFTWARE.
  * @param addr the I2C adress of the devide
  * @return Zero on success
  */
-uint8_t Adxl357::init(uint8_t addr)
+uint8_t Adxl357::init(uint8_t addr, TwoWire *wire)
 {
     uint8_t ID;
 
-    _address = addr;        // object address
-    ADXL357_WIRE.begin();   // establish connection
+    adxl357Wire = wire;
+    _address    = addr;        // object address
+
+    adxl357Wire->begin();   // establish connection
     getDeviceID(&ID);
 
     if(ID != ADXL357_ID)    // check for correct part
@@ -334,13 +336,13 @@ uint8_t Adxl357::setCalibrationConstant(double calib)
  */
 uint8_t Adxl357::writeBytes(uint8_t reg, uint8_t *data, uint32_t len)
 {
-    ADXL357_WIRE.beginTransmission(_address);   // transmit to ADXL357 address
-    ADXL357_WIRE.write(reg);                    // call for register attention
+    adxl357Wire->beginTransmission(_address);   // transmit to ADXL357 address
+    adxl357Wire->write(reg);                    // call for register attention
 
     for(unsigned int i = 0; i < len; i++)
-        ADXL357_WIRE.write(data[i]);            // send data over
+        adxl357Wire->write(data[i]);            // send data over
 
-    return ADXL357_WIRE.endTransmission();
+    return adxl357Wire->endTransmission();
 }
 
 
@@ -357,12 +359,12 @@ uint8_t Adxl357::readBytes(uint8_t reg, uint8_t *dest, uint32_t len, uint32_t re
 {
     uint32_t time_outs = 0;
 
-    ADXL357_WIRE.beginTransmission(_address);   // transmit to ADXL357 address
-    ADXL357_WIRE.write(reg);                    // call for register attention
-    ADXL357_WIRE.endTransmission();             // end transmission as master
-    ADXL357_WIRE.requestFrom(_address, len);    // request data
+    adxl357Wire->beginTransmission(_address);   // transmit to ADXL357 address
+    adxl357Wire->write(reg);                    // call for register attention
+    adxl357Wire->endTransmission();             // end transmission as master
+    adxl357Wire->requestFrom(_address, len);    // request data
 
-    while(ADXL357_WIRE.available() != len)      // check if data is ready
+    while(adxl357Wire->available() != len)      // check if data is ready
     {
         time_outs++;
 
@@ -373,7 +375,7 @@ uint8_t Adxl357::readBytes(uint8_t reg, uint8_t *dest, uint32_t len, uint32_t re
     }
 
     for(unsigned int i = 0; i < len; i++)
-        dest[i] = ADXL357_WIRE.read();
+        dest[i] = adxl357Wire->read();
 
    return 0;
 }

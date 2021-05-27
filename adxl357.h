@@ -35,7 +35,6 @@ SOFTWARE.
 
 ////    Defines    ////
 // I2C settings
-#define ADXL357_WIRE                Wire    // Change to Wire1 or Wire2 if needed
 #define ADXL357_ID                  0xED
 
 // Device adresses
@@ -99,7 +98,7 @@ class Adxl357
         Adxl357()  {};
         ~Adxl357() {};
 
-        uint8_t init                    (uint8_t addr);
+        uint8_t init                    (uint8_t addr, TwoWire *wire = &Wire);
         uint8_t reset                   ();
         bool    isDataReady             ();
 
@@ -123,6 +122,7 @@ class Adxl357
     private:
         uint8_t  _address;
         double   _calib = 1;
+        TwoWire *adxl357Wire;
 
         uint8_t writeBytes              (uint8_t reg, uint8_t *data, uint32_t len);
         uint8_t readBytes               (uint8_t reg, uint8_t *dest, uint32_t len, uint32_t retries = 10);
